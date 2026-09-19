@@ -1,0 +1,376 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #222;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+nav {
+    background: #111827;
+    color: white;
+    padding: 18px 30px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    flex-wrap: wrap;
+}
+
+nav h2 {
+    margin: 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 18px;
+    font-size: 14px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    width: 92%;
+    margin: 30px auto;
+}
+
+
+/* =========================
+   DASHBOARD CARDS
+========================= */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #555;
+}
+
+.card p {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+
+/* =========================
+   PAGE HEADER
+========================= */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+button,
+.button {
+    background: #2563eb;
+    color: white;
+
+    border: none;
+    padding: 11px 18px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+    text-decoration: none;
+
+    display: inline-block;
+}
+
+button:hover,
+.button:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================
+   FORMS
+========================= */
+
+.form-container {
+    background: white;
+
+    max-width: 650px;
+
+    margin: 25px auto;
+    padding: 25px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.form-container label {
+    display: block;
+
+    margin-top: 15px;
+    margin-bottom: 5px;
+
+    font-weight: bold;
+}
+
+input,
+select {
+    width: 100%;
+
+    padding: 11px;
+
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    font-size: 15px;
+}
+
+.form-container button {
+    margin-top: 20px;
+}
+
+.cancel {
+    display: inline-block;
+
+    margin-left: 10px;
+
+    padding: 11px 18px;
+
+    background: #6b7280;
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 5px;
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-form {
+    display: flex;
+
+    margin: 20px 0;
+
+    gap: 10px;
+}
+
+.search-form input {
+    max-width: 400px;
+}
+
+
+/* =========================
+   TABLE
+========================= */
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: white;
+
+    margin-top: 20px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+th,
+td {
+    padding: 13px;
+
+    border-bottom: 1px solid #ddd;
+
+    text-align: left;
+}
+
+th {
+    background: #111827;
+    color: white;
+}
+
+tr:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================
+   ACTIONS
+========================= */
+
+.edit {
+    color: #2563eb;
+    margin-right: 10px;
+
+    text-decoration: none;
+}
+
+.delete {
+    color: #dc2626;
+
+    text-decoration: none;
+}
+
+
+/* =========================
+   ALERTS
+========================= */
+
+.alert {
+    background: #fee2e2;
+
+    color: #991b1b;
+
+    padding: 10px;
+
+    margin-bottom: 15px;
+
+    border-radius: 5px;
+}
+
+.success {
+    background: #dcfce7;
+
+    color: #166534;
+
+    padding: 10px;
+
+    margin: 15px 0;
+
+    border-radius: 5px;
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+.login-body {
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    background: #111827;
+}
+
+.login-box {
+    width: 400px;
+
+    background: white;
+
+    padding: 35px;
+
+    border-radius: 12px;
+
+    text-align: center;
+}
+
+.login-box h1 {
+    margin-bottom: 5px;
+}
+
+.login-box form {
+    text-align: left;
+
+    margin-top: 25px;
+}
+
+.login-box label {
+    display: block;
+
+    margin-top: 15px;
+    margin-bottom: 5px;
+
+    font-weight: bold;
+}
+
+.login-box button {
+    width: 100%;
+
+    margin-top: 20px;
+}
+
+.login-info {
+    color: #666;
+    font-size: 13px;
+    margin-top: 20px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    nav {
+        gap: 15px;
+    }
+
+    nav a {
+        display: inline-block;
+        margin: 5px;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    .container {
+        width: 96%;
+    }
+
+    .form-container {
+        width: 100%;
+    }
+
+}
