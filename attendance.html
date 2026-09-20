@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav>
+    <h2>GYM MANAGEMENT</h2>
+
+    <div>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('members') }}">Members</a>
+        <a href="{{ url_for('membership') }}">Membership</a>
+        <a href="{{ url_for('payments') }}">Payments</a>
+        <a href="{{ url_for('attendance') }}">Attendance</a>
+        <a href="{{ url_for('trainers') }}">Trainers</a>
+        <a href="{{ url_for('reports') }}">Reports</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <h1>Attendance Management</h1>
+
+    <div class="form-container">
+
+        <h2>Mark Attendance</h2>
+
+        <form method="POST">
+
+            <label>Member</label>
+
+            <select name="member_id" required>
+
+                <option value="">Select Member</option>
+
+                {% for member in members %}
+
+                <option value="{{ member.member_id }}">
+                    {{ member.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <label>Date</label>
+
+            <input
+                type="date"
+                name="attendance_date"
+                required
+            >
+
+            <button type="submit">
+                Mark Attendance
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <h2>Attendance History</h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Member</th>
+                <th>Date</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for record in attendance %}
+
+            <tr>
+
+                <td>{{ record.attendance_id }}</td>
+                <td>{{ record.name }}</td>
+                <td>{{ record.attendance_date }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>

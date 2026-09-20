@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>{{ title }}</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        header {
+            background: #222;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background: #333;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 700px;
+            margin: 30px auto;
+        }
+
+        .form-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+            text-transform: capitalize;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 5px;
+            background: #222;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        .cancel {
+            flex: 1;
+            padding: 13px;
+            text-align: center;
+            border-radius: 5px;
+            background: #ddd;
+            color: #222;
+            text-decoration: none;
+        }
+
+        .cancel:hover {
+            background: #ccc;
+        }
+
+        .error {
+            background: #ffe0e0;
+            color: #900;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<header>
+
+    <h1>Gym Membership Management System</h1>
+
+</header>
+
+
+<nav>
+
+    <a href="/">Home</a>
+
+    <a href="/members">Members</a>
+
+    <a href="/trainers">Trainers</a>
+
+    <a href="/membership-plans">Membership Plans</a>
+
+    <a href="/memberships">Memberships</a>
+
+    <a href="/payments">Payments</a>
+
+    <a href="/attendance">Attendance</a>
+
+    <a href="/users">Users</a>
+
+</nav>
+
+
+<div class="container">
+
+    <div class="form-box">
+
+        <h2>➕ {{ title }}</h2>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="error">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <form method="POST">
+
+
+            {% for column in columns %}
+
+            <div class="form-group">
+
+                <label for="{{ column.name }}">
+
+                    {{ column.name.replace('_', ' ') }}
+
+                    {% if not column.nullable %}
+                        *
+                    {% endif %}
+
+                </label>
+
+
+                {% if 'date' in column.type
+                      and 'timestamp' not in column.type %}
+
+                    <input
+                        type="date"
+                        id="{{ column.name }}"
+                        name="{{ column.name }}"
+                        {% if not column.nullable %}
+                        required
+                        {% endif %}
+                    >
+
+
+                {% elif 'timestamp' in column.type %}
+
+                    <input
+                        type="datetime-local"
+                        id="{{ column.name }}"
+                        name="{{ column.name }}"
+                        {% if not column.nullable %}
+                        required
+                        {% endif %}
+                    >
+
+
+                {% elif column.type == 'boolean' %}
+
+                    <select
+                        id="{{ column.name }}"
+                        name="{{ column.name }}"
+                    >
+
+                        <option value="">
+                            Select
+                        </option>
+
+                        <option value="true">
+                            Yes
+                        </option>
+
+                        <option value="false">
+                            No
+                        </option>
+
+                    </select>
+
+
+                {% elif 'integer' in column.type
+                      or 'numeric' in column.type
+                      or 'decimal' in column.type
+                      or 'double' in column.type
+                      or 'real' in column.type %}
+
+                    <input
+                        type="number"
+                        step="any"
+                        id="{{ column.name }}"
+                        name="{{ column.name }}"
+                        placeholder="Enter {{ column.name.replace('_', ' ') }}"
+                        {% if not column.nullable %}
+                        required
+                        {% endif %}
+                    >
+
+
+                {% elif 'text' in column.type %}
+
+                    <textarea
+                        id="{{ column.name }}"
+                        name="{{ column.name }}"
+                        placeholder="Enter {{ column.name.replace('_', ' ') }}"
+                        {% if not column.nullable %}
+                        required
+                        {% endif %}
+                    ></textarea>
+
+
+                {% else %}
+
+                    <input
+                        type="text"
+                        id="{{ column.name }}"
+                        name="{{ column.name }}"
+                        placeholder="Enter {{ column.name.replace('_', ' ') }}"
+                        {% if not column.nullable %}
+                        required
+                        {% endif %}
+                    >
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+
+            <div class="buttons">
+
+                <button type="submit">
+                    Save
+                </button>
+
+                <a
+                    class="cancel"
+                    href="{{ back_url }}"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>
