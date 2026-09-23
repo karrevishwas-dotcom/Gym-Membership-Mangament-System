@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Members</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav>
+    <h2>GYM MANAGEMENT</h2>
+
+    <div>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('members') }}">Members</a>
+        <a href="{{ url_for('membership') }}">Membership</a>
+        <a href="{{ url_for('payments') }}">Payments</a>
+        <a href="{{ url_for('attendance') }}">Attendance</a>
+        <a href="{{ url_for('trainers') }}">Trainers</a>
+        <a href="{{ url_for('reports') }}">Reports</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="page-header">
+
+        <h1>Members</h1>
+
+        <a class="button" href="{{ url_for('add_member') }}">
+            + Add Member
+        </a>
+
+    </div>
+
+    <form method="GET" class="search-form">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search member..."
+        >
+
+        <button type="submit">Search</button>
+
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <div class="success">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Registration Date</th>
+                <th>Actions</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for member in members %}
+
+            <tr>
+
+                <td>{{ member.member_id }}</td>
+                <td>{{ member.name }}</td>
+                <td>{{ member.phone }}</td>
+                <td>{{ member.email }}</td>
+                <td>{{ member.age }}</td>
+                <td>{{ member.gender }}</td>
+                <td>{{ member.registration_date }}</td>
+
+                <td>
+
+                    <a
+                        class="edit"
+                        href="{{ url_for('edit_member', member_id=member.member_id) }}"
+                    >
+                        Edit
+                    </a>
+
+                    <a
+                        class="delete"
+                        href="{{ url_for('delete_member', member_id=member.member_id) }}"
+                        onclick="return confirmDelete()"
+                    >
+                        Delete
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>
