@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trainers</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav>
+    <h2>GYM MANAGEMENT</h2>
+
+    <div>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('members') }}">Members</a>
+        <a href="{{ url_for('membership') }}">Membership</a>
+        <a href="{{ url_for('payments') }}">Payments</a>
+        <a href="{{ url_for('attendance') }}">Attendance</a>
+        <a href="{{ url_for('trainers') }}">Trainers</a>
+        <a href="{{ url_for('reports') }}">Reports</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <h1>Trainer Management</h1>
+
+    <div class="form-container">
+
+        <h2>Add Trainer</h2>
+
+        <form method="POST">
+
+            <label>Trainer Name</label>
+
+            <input
+                type="text"
+                name="name"
+                required
+            >
+
+            <label>Phone</label>
+
+            <input
+                type="text"
+                name="phone"
+            >
+
+            <label>Specialization</label>
+
+            <input
+                type="text"
+                name="specialization"
+            >
+
+            <button type="submit">
+                Add Trainer
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <h2>Trainer List</h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Specialization</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for trainer in trainers %}
+
+            <tr>
+
+                <td>{{ trainer.trainer_id }}</td>
+                <td>{{ trainer.name }}</td>
+                <td>{{ trainer.phone }}</td>
+                <td>{{ trainer.specialization }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>
