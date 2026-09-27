@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reports</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav>
+    <h2>GYM MANAGEMENT</h2>
+
+    <div>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('members') }}">Members</a>
+        <a href="{{ url_for('membership') }}">Membership</a>
+        <a href="{{ url_for('payments') }}">Payments</a>
+        <a href="{{ url_for('attendance') }}">Attendance</a>
+        <a href="{{ url_for('trainers') }}">Trainers</a>
+        <a href="{{ url_for('reports') }}">Reports</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="page-header">
+
+        <h1>Membership Reports</h1>
+
+        <button onclick="window.print()">
+            Print Report
+        </button>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>Member ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Plan</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for report in reports %}
+
+            <tr>
+
+                <td>{{ report.member_id }}</td>
+                <td>{{ report.name }}</td>
+                <td>{{ report.phone }}</td>
+                <td>{{ report.plan_name or 'No Membership' }}</td>
+                <td>{{ report.start_date or '-' }}</td>
+                <td>{{ report.end_date or '-' }}</td>
+                <td>{{ report.status or '-' }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>
