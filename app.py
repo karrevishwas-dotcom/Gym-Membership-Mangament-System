@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, flash, session
 import psycopg2
 
 
@@ -8,6 +8,7 @@ import psycopg2
 
 app = Flask(__name__)
 
+# Secret key for sessions and flash messages
 app.secret_key = "gym-secret-key"
 
 
@@ -16,13 +17,148 @@ app.secret_key = "gym-secret-key"
 # ============================================================
 
 def get_db_connection():
+
     return psycopg2.connect(
         host="localhost",
         port="5432",
-        database="gym_database.sql",
+        database="gym_management",
         user="postgres",
         password="Vishwas@160627"
     )
+
+
+# ============================================================
+# LOGIN PROTECTION
+# ============================================================
+
+@app.before_request
+def require_login():
+
+    # These pages can be opened without login
+    allowed_routes = [
+        "login",
+        "static"
+    ]
+
+    # Allow login page and static files
+    if request.endpoint in allowed_routes:
+        return
+
+    # If user is not logged in, send them to login
+    if "user_id" not in session:
+        return redirect("/login")
+
+
+# ============================================================
+# LOGIN PAGE
+# ============================================================
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    # If already logged in, go to dashboard
+    if "user_id" in session:
+        return redirect("/")
+
+    if request.method == "POST":
+
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
+
+        # Check empty fields
+        if username == "" or password == "":
+
+            flash(
+                "Please enter username and password.",
+                "error"
+            )
+
+            return render_template("login.html")
+
+        conn = None
+        cur = None
+
+        try:
+
+            conn = get_db_connection()
+            cur = conn.cursor()
+
+            # Check username and password
+            cur.execute(
+                """
+                SELECT
+                    user_id,
+                    username,
+                    password,
+                    role
+                FROM users
+                WHERE username = %s
+                AND password = %s
+                """,
+                (
+                    username,
+                    password
+                )
+            )
+
+            user = cur.fetchone()
+
+            # User found
+            if user:
+
+                session["user_id"] = user[0]
+                session["username"] = user[1]
+                session["role"] = user[3]
+
+                flash(
+                    "Login successful!",
+                    "success"
+                )
+
+                return redirect("/")
+
+            # User not found
+            else:
+
+                flash(
+                    "Invalid username or password.",
+                    "error"
+                )
+
+        except Exception as e:
+
+            flash(
+                "Database error: " + str(e),
+                "error"
+            )
+
+        finally:
+
+            if cur:
+                cur.close()
+
+            if conn:
+                conn.close()
+
+    return render_template("login.html")
+
+
+# ============================================================
+# LOGOUT
+# ============================================================
+
+@app.route("/logout")
+def logout():
+
+    # Remove login session
+    session.clear()
+
+    flash(
+        "You have been logged out.",
+        "success"
+    )
+
+    return redirect("/login")
 
 
 # ============================================================
@@ -37,20 +173,44 @@ def index():
         conn = get_db_connection()
         cur = conn.cursor()
 
+        # ----------------------------------------------------
         # Count Members
-        cur.execute("SELECT COUNT(*) FROM members")
+        # ----------------------------------------------------
+
+        cur.execute(
+            "SELECT COUNT(*) FROM members"
+        )
+
         members_count = cur.fetchone()[0]
 
+        # ----------------------------------------------------
         # Count Trainers
-        cur.execute("SELECT COUNT(*) FROM trainers")
+        # ----------------------------------------------------
+
+        cur.execute(
+            "SELECT COUNT(*) FROM trainers"
+        )
+
         trainers_count = cur.fetchone()[0]
 
+        # ----------------------------------------------------
         # Count Memberships
-        cur.execute("SELECT COUNT(*) FROM memberships")
+        # ----------------------------------------------------
+
+        cur.execute(
+            "SELECT COUNT(*) FROM memberships"
+        )
+
         memberships_count = cur.fetchone()[0]
 
+        # ----------------------------------------------------
         # Count Payments
-        cur.execute("SELECT COUNT(*) FROM payments")
+        # ----------------------------------------------------
+
+        cur.execute(
+            "SELECT COUNT(*) FROM payments"
+        )
+
         payments_count = cur.fetchone()[0]
 
         cur.close()
@@ -84,12 +244,18 @@ def show_table(table_name, title):
         conn = get_db_connection()
         cur = conn.cursor()
 
-        query = f'SELECT * FROM "{table_name}" ORDER BY 1'
+        # Get all records
+        query = f'''
+            SELECT *
+            FROM "{table_name}"
+            ORDER BY 1
+        '''
 
         cur.execute(query)
 
         data = cur.fetchall()
 
+        # Get column names
         columns = [
             description[0]
             for description in cur.description
@@ -245,11 +411,17 @@ def get_table_columns(table_name):
         default_value = column[3]
         is_identity = column[4]
 
+        # ----------------------------------------------------
         # Skip identity columns
+        # ----------------------------------------------------
+
         if is_identity == "YES":
             continue
 
+        # ----------------------------------------------------
         # Skip SERIAL / auto-generated ID columns
+        # ----------------------------------------------------
+
         if default_value and "nextval(" in default_value:
             continue
 
@@ -283,9 +455,9 @@ def add_record(table_name, title, back_url):
             back_url=back_url
         )
 
-    # --------------------------------------------------------
+    # ========================================================
     # POST REQUEST
-    # --------------------------------------------------------
+    # ========================================================
 
     if request.method == "POST":
 
@@ -301,9 +473,9 @@ def add_record(table_name, title, back_url):
             insert_values = []
             placeholders = []
 
-            # -----------------------------------------------
+            # ------------------------------------------------
             # READ FORM VALUES
-            # -----------------------------------------------
+            # ------------------------------------------------
 
             for column in columns:
 
@@ -314,23 +486,23 @@ def add_record(table_name, title, back_url):
                     ""
                 ).strip()
 
-                # -------------------------------------------
+                # --------------------------------------------
                 # EMPTY FIELD WITH DEFAULT VALUE
-                # -------------------------------------------
+                # --------------------------------------------
 
                 if value == "" and column["default"]:
                     continue
 
-                # -------------------------------------------
+                # --------------------------------------------
                 # EMPTY NULLABLE FIELD
-                # -------------------------------------------
+                # --------------------------------------------
 
                 if value == "" and column["nullable"]:
                     continue
 
-                # -------------------------------------------
+                # --------------------------------------------
                 # REQUIRED FIELD EMPTY
-                # -------------------------------------------
+                # --------------------------------------------
 
                 if value == "" and not column["nullable"]:
 
@@ -349,9 +521,9 @@ def add_record(table_name, title, back_url):
                         back_url=back_url
                     )
 
-                # -------------------------------------------
+                # --------------------------------------------
                 # ADD VALUE
-                # -------------------------------------------
+                # --------------------------------------------
 
                 insert_columns.append(column_name)
 
@@ -359,9 +531,9 @@ def add_record(table_name, title, back_url):
 
                 placeholders.append("%s")
 
-            # ------------------------------------------------
+            # =================================================
             # INSERT DATA
-            # ------------------------------------------------
+            # =================================================
 
             if insert_columns:
 
@@ -397,9 +569,9 @@ def add_record(table_name, title, back_url):
 
             return redirect(back_url)
 
-        # ----------------------------------------------------
+        # ====================================================
         # DATABASE ERROR
-        # ----------------------------------------------------
+        # ====================================================
 
         except Exception as e:
 
