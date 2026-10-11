@@ -1,0 +1,11 @@
+[
+  "tests/test_attendance.py::test_attendance_date",
+  "tests/test_attendance.py::test_attendance_member",
+  "tests/test_attendance.py::test_attendance_record",
+  "tests/test_members.py::test_member_age",
+  "tests/test_members.py::test_member_name",
+  "tests/test_members.py::test_member_phone",
+  "tests/test_payments.py::test_payment_amount",
+  "tests/test_payments.py::test_payment_date",
+  "tests/test_payments.py::test_payment_method"
+]
